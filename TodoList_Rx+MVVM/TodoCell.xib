@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TodoCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TodoCell" rowHeight="68" id="iqn-Zo-f91" customClass="TodoCell" customModule="TodoList_Rx_MVVM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="555" height="68"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iqn-Zo-f91" id="DZT-js-PQh">
+                <rect key="frame" x="0.0" y="0.0" width="555" height="68"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHg-hu-8Ve">
+                        <rect key="frame" x="28" y="19" width="20" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="GmI-j1-4ow"/>
+                            <constraint firstAttribute="height" constant="20" id="tSN-Lp-cqf"/>
+                        </constraints>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="square" catalog="system"/>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 할일" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u10-nP-jiA">
+                        <rect key="frame" x="61" y="9.9999999999999982" width="480" height="19.333333333333329"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" name="todoCellContent"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="시간" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Piv-nS-oJD">
+                        <rect key="frame" x="60.999999999999993" y="42.333333333333336" width="22.666666666666664" height="15.666666666666664"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" name="todoCellTime"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Piv-nS-oJD" firstAttribute="leading" secondItem="u10-nP-jiA" secondAttribute="leading" id="4Gq-BC-dIm"/>
+                    <constraint firstItem="u10-nP-jiA" firstAttribute="leading" secondItem="ZHg-hu-8Ve" secondAttribute="trailing" constant="13" id="P3T-9A-kU9"/>
+                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="top" secondItem="DZT-js-PQh" secondAttribute="top" constant="19" id="XEv-XF-coX"/>
+                    <constraint firstAttribute="trailing" secondItem="u10-nP-jiA" secondAttribute="trailing" constant="14" id="fqx-fl-miF"/>
+                    <constraint firstItem="Piv-nS-oJD" firstAttribute="top" secondItem="u10-nP-jiA" secondAttribute="bottom" constant="13" id="hwt-hH-GP9"/>
+                    <constraint firstItem="u10-nP-jiA" firstAttribute="top" secondItem="DZT-js-PQh" secondAttribute="top" constant="10" id="n0Y-A9-jtj"/>
+                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="leading" secondItem="DZT-js-PQh" secondAttribute="leading" constant="28" id="pEJ-JJ-SyE"/>
+                    <constraint firstAttribute="bottom" secondItem="Piv-nS-oJD" secondAttribute="bottom" constant="10" id="qVE-xh-7Ql"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="checkBox" destination="ZHg-hu-8Ve" id="DwP-eU-8dM"/>
+                <outlet property="todoContent" destination="u10-nP-jiA" id="ngQ-L1-r9r"/>
+                <outlet property="todoTime" destination="Piv-nS-oJD" id="JEf-Ib-tmg"/>
+            </connections>
+            <point key="canvasLocation" x="270.99236641221376" y="-19.014084507042256"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="square" catalog="system" width="128" height="114"/>
+        <namedColor name="todoCellContent">
+            <color red="0.45098039215686275" green="0.45098039215686275" blue="0.45098039215686275" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="todoCellTime">
+            <color red="0.63921568627450975" green="0.63921568627450975" blue="0.63921568627450975" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
