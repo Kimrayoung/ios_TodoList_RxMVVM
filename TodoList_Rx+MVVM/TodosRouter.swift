@@ -23,7 +23,7 @@ enum TodosRouter {
             switch self {
             case .fetchTodo(let page): return BASE_URL + "todos?" + "page=\(page)"
             case .addTodo: return BASE_URL + "todos-json"
-            case .editTodo(let id): return BASE_URL + "todos/" + "\(id)"
+            case .editTodo(let id): return BASE_URL + "todos-json/" + "\(id)"
             case .deleteTodo(let id): return BASE_URL + "todos/" + "\(id)"
             }
         }
@@ -44,6 +44,7 @@ enum TodosRouter {
         case noContent
         case badStatus(code: Int)
         case badUrl
+        case unknownErr(err: Error)
         
         var info : String {
             switch self {
@@ -53,6 +54,7 @@ enum TodosRouter {
             case .noContent: return "데이터가 없습니다"
             case .decodingErr: return "디코딩에러입니다"
             case .badUrl: return "올바르지 않은 url입니다."
+            case .unknownErr(let err): return "알수없는 에러입니다 \(err)"
             }
         }
     }
@@ -68,13 +70,20 @@ enum TodosRouter {
             .decode(type: FetchTodo.self, decoder: JSONDecoder())
             .catch { err in
                 print(#fileID, #function, #line, "- err: \(err)")
-                return Observable.error(err)
+                if let error = err as? ApiError {
+                    throw error
+                }
+                if let _ = err as? DecodingError {
+                    throw ApiError.decodingErr
+                }
+                throw ApiError.unknownErr(err: err)
             }
+            
     }
     
-    static func addTodo(_ title: String, _ isDone: Bool, _ completion: @escaping (Result<TodoModify, ApiError>) -> Void) {
+    static func addTodo(_ title: String, _ isDone: Bool) -> Observable<TodoModify> {
         let urlString = EndPoint.addTodo.endString
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else { return Observable.error(ApiError.badUrl)}
         var request = URLRequest(url: url)
         request.httpMethod = HttpMethod.post.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Accept")
@@ -86,28 +95,24 @@ enum TodosRouter {
             let jsonData = try JSONSerialization.data(withJSONObject: dataDic, options: .prettyPrinted)
             request.httpBody = jsonData
         } catch {
-            return completion(.failure(.encodingErr))
+            return Observable.error(ApiError.encodingErr)
         }
         
-        URLSession.shared.dataTask(with: request) { data, urlResponse, err in
-            guard let data = data else { return }
-            let decoder = JSONDecoder()
-            do {
-                let addTodo = try decoder.decode(TodoModify.self, from: Data(data))
-                completion(.success(addTodo))
-            } catch {
-                completion(.failure(.parsingError))
+        return URLSession.shared.rx.data(request: request)
+            .decode(type: TodoModify.self, decoder: JSONDecoder())
+            .catch { err in
+                print(#fileID, #function, #line, "- err: \(err)")
+                return Observable.error(err)
             }
-        }.resume()
     }
     
-    static func editTodo(_ title: String, _ isDone: Bool, _ id: Int, _ completion: @escaping (Result<TodoModify, ApiError>) -> ()) {
+    static func editTodo(_ title: String, _ isDone: Bool, _ id: Int) -> Observable<TodoModify> {
         let urlString = EndPoint.editTodo(id: id).endString
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else { return Observable.error(ApiError.badUrl) }
         var request = URLRequest(url: url)
-        request.httpMethod = HttpMethod.put.rawValue
+        request.httpMethod = HttpMethod.post.rawValue
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let dataDic: [String : Any] = ["title" : title, "is_done" : isDone]
         
@@ -115,20 +120,15 @@ enum TodosRouter {
             let jsonData = try JSONSerialization.data(withJSONObject: dataDic, options: .prettyPrinted)
             request.httpBody = jsonData
         } catch {
-            return completion(.failure(.encodingErr))
+            return Observable.error(ApiError.encodingErr)
         }
         
-        URLSession.shared.dataTask(with: request) { data, urlResponse, err in
-            guard let data = data else { return }
-            let decoder = JSONDecoder()
-            
-            do {
-                let editTodo = try decoder.decode(TodoModify.self, from: Data(data))
-                completion(.success(editTodo))
-            } catch {
-                completion(.failure(.parsingError))
+        return URLSession.shared.rx.data(request: request)
+            .decode(type: TodoModify.self, decoder: JSONDecoder())
+            .catch { err in
+                print(#fileID, #function, #line, "- err: \(err)")
+                return Observable.error(err)
             }
-        }.resume()
     }
     
     
