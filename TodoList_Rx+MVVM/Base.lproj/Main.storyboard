@@ -23,8 +23,8 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="T86-7a-lYp"/>
                                 </connections>
                             </searchBar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="8hg-9b-qFV">
-                                <rect key="frame" x="0.0" y="155" width="393" height="623"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="8hg-9b-qFV">
+                                <rect key="frame" x="0.0" y="150" width="393" height="628"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yhx-5P-j5k">
@@ -49,7 +49,7 @@
                         <constraints>
                             <constraint firstItem="8hg-9b-qFV" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="2A3-yY-yVZ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HyC-KY-gXk" secondAttribute="trailing" id="8pw-Pw-60g"/>
-                            <constraint firstItem="8hg-9b-qFV" firstAttribute="top" secondItem="wgs-Qr-NdL" secondAttribute="bottom" constant="5" id="Mz3-so-nhd"/>
+                            <constraint firstItem="8hg-9b-qFV" firstAttribute="top" secondItem="wgs-Qr-NdL" secondAttribute="bottom" id="Mz3-so-nhd"/>
                             <constraint firstItem="HyC-KY-gXk" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="N6H-vu-UfW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="8hg-9b-qFV" secondAttribute="bottom" constant="40" id="WVa-SA-90S"/>
                             <constraint firstItem="yhx-5P-j5k" firstAttribute="top" secondItem="8hg-9b-qFV" secondAttribute="bottom" constant="8" symbolic="YES" id="cnA-BW-cgs"/>

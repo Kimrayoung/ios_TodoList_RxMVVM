@@ -6,6 +6,25 @@
 //
 
 import Foundation
+import RxDataSources
+
+struct SectionOfCustomData {
+    var header: String
+    var items: [Todo]
+}
+
+extension SectionOfCustomData: Codable {
+    init(dictionary: [String : Any]) throws {
+        self = try JSONDecoder().decode(SectionOfCustomData.self, from: JSONSerialization.data(withJSONObject: dictionary))
+    }
+}
+
+extension SectionOfCustomData: SectionModelType {
+    init(original: SectionOfCustomData, items: [Todo]) {
+        self = original
+        self.items = items
+    }
+}
 
 // MARK: - Dodge
 struct FetchTodo: Codable {
