@@ -4,58 +4,86 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TodoCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TodoCell" rowHeight="68" id="iqn-Zo-f91" customClass="TodoCell" customModule="TodoList_Rx_MVVM" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="555" height="68"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="TodoCell" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TodoCell" rowHeight="176" id="iqn-Zo-f91" customClass="TodoCell" customModule="TodoList_Rx_MVVM" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="603" height="176"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iqn-Zo-f91" id="DZT-js-PQh">
-                <rect key="frame" x="0.0" y="0.0" width="555" height="68"/>
+                <rect key="frame" x="0.0" y="0.0" width="603" height="176"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHg-hu-8Ve">
-                        <rect key="frame" x="28" y="19" width="20" height="20"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="0Mu-B3-sh3">
+                        <rect key="frame" x="20" y="0.0" width="583" height="176"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bIX-ud-pmh">
+                                <rect key="frame" x="0.0" y="0.0" width="86.666666666666671" height="40.666666666666664"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="34"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TQ2-2j-dtR">
+                                <rect key="frame" x="0.0" y="40.666666666666671" width="583" height="135.33333333333331"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHg-hu-8Ve">
+                                        <rect key="frame" x="0.0" y="43.333333333333336" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="GmI-j1-4ow"/>
+                                            <constraint firstAttribute="height" constant="20" id="tSN-Lp-cqf"/>
+                                        </constraints>
+                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="square" catalog="system"/>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 할일" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u10-nP-jiA">
+                                        <rect key="frame" x="33" y="10" width="530" height="86.666666666666671"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" name="todoCellContent"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="시간" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Piv-nS-oJD">
+                                        <rect key="frame" x="33" y="109.66666666666669" width="22.666666666666671" height="15.666666666666671"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="textColor" name="todoCellTime"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Piv-nS-oJD" secondAttribute="bottom" constant="10" id="2N8-QO-qeo"/>
+                                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="leading" secondItem="TQ2-2j-dtR" secondAttribute="leading" id="L9a-WU-kJ4"/>
+                                    <constraint firstItem="u10-nP-jiA" firstAttribute="leading" secondItem="ZHg-hu-8Ve" secondAttribute="trailing" constant="13" id="LDf-GW-PIT"/>
+                                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="centerY" secondItem="u10-nP-jiA" secondAttribute="centerY" id="Tkc-U1-rys"/>
+                                    <constraint firstItem="u10-nP-jiA" firstAttribute="top" secondItem="TQ2-2j-dtR" secondAttribute="top" constant="10" id="eIN-bC-23c"/>
+                                    <constraint firstItem="Piv-nS-oJD" firstAttribute="top" secondItem="u10-nP-jiA" secondAttribute="bottom" constant="13" id="mWf-3Z-YCd"/>
+                                    <constraint firstAttribute="trailing" secondItem="u10-nP-jiA" secondAttribute="trailing" constant="20" id="qe3-g4-htg"/>
+                                    <constraint firstItem="Piv-nS-oJD" firstAttribute="leading" secondItem="u10-nP-jiA" secondAttribute="leading" id="xFe-zl-JZE"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <constraints>
-                            <constraint firstAttribute="width" constant="20" id="GmI-j1-4ow"/>
-                            <constraint firstAttribute="height" constant="20" id="tSN-Lp-cqf"/>
+                            <constraint firstAttribute="trailing" secondItem="TQ2-2j-dtR" secondAttribute="trailing" id="4dB-t1-5xY"/>
                         </constraints>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" image="square" catalog="system"/>
-                    </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 할일" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u10-nP-jiA">
-                        <rect key="frame" x="61" y="9.9999999999999982" width="480" height="19.333333333333329"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                        <color key="textColor" name="todoCellContent"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="시간" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Piv-nS-oJD">
-                        <rect key="frame" x="60.999999999999993" y="42.333333333333336" width="22.666666666666664" height="15.666666666666664"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" name="todoCellTime"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Piv-nS-oJD" firstAttribute="leading" secondItem="u10-nP-jiA" secondAttribute="leading" id="4Gq-BC-dIm"/>
-                    <constraint firstItem="u10-nP-jiA" firstAttribute="leading" secondItem="ZHg-hu-8Ve" secondAttribute="trailing" constant="13" id="P3T-9A-kU9"/>
-                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="top" secondItem="DZT-js-PQh" secondAttribute="top" constant="19" id="XEv-XF-coX"/>
-                    <constraint firstAttribute="trailing" secondItem="u10-nP-jiA" secondAttribute="trailing" constant="14" id="fqx-fl-miF"/>
-                    <constraint firstItem="Piv-nS-oJD" firstAttribute="top" secondItem="u10-nP-jiA" secondAttribute="bottom" constant="13" id="hwt-hH-GP9"/>
-                    <constraint firstItem="u10-nP-jiA" firstAttribute="top" secondItem="DZT-js-PQh" secondAttribute="top" constant="10" id="n0Y-A9-jtj"/>
-                    <constraint firstItem="ZHg-hu-8Ve" firstAttribute="leading" secondItem="DZT-js-PQh" secondAttribute="leading" constant="28" id="pEJ-JJ-SyE"/>
-                    <constraint firstAttribute="bottom" secondItem="Piv-nS-oJD" secondAttribute="bottom" constant="10" id="qVE-xh-7Ql"/>
+                    <constraint firstItem="0Mu-B3-sh3" firstAttribute="top" secondItem="DZT-js-PQh" secondAttribute="top" id="JTg-ER-tnQ"/>
+                    <constraint firstItem="0Mu-B3-sh3" firstAttribute="leading" secondItem="DZT-js-PQh" secondAttribute="leading" constant="20" id="ZWk-aP-9gY"/>
+                    <constraint firstAttribute="bottom" secondItem="0Mu-B3-sh3" secondAttribute="bottom" id="k5a-Eg-kdu"/>
+                    <constraint firstAttribute="trailing" secondItem="0Mu-B3-sh3" secondAttribute="trailing" id="pcM-Yp-m5A"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="checkBox" destination="ZHg-hu-8Ve" id="DwP-eU-8dM"/>
                 <outlet property="todoContent" destination="u10-nP-jiA" id="ngQ-L1-r9r"/>
+                <outlet property="todoDate" destination="bIX-ud-pmh" id="B6I-47-MWI"/>
                 <outlet property="todoTime" destination="Piv-nS-oJD" id="JEf-Ib-tmg"/>
             </connections>
-            <point key="canvasLocation" x="270.99236641221376" y="-19.014084507042256"/>
+            <point key="canvasLocation" x="188.54961832061068" y="-45.070422535211272"/>
         </tableViewCell>
     </objects>
     <resources>
@@ -66,5 +94,8 @@
         <namedColor name="todoCellTime">
             <color red="0.63921568627450975" green="0.63921568627450975" blue="0.63921568627450975" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

@@ -13,14 +13,17 @@ import RxSwift
 
 class TodoVM {
     
-    let todoListData: BehaviorRelay<[SectionOfCustomData]> = BehaviorRelay(value: [])
+//    let todoListData: BehaviorRelay<[SectionOfCustomData]> = BehaviorRelay(value: [])
+    let todoListData: BehaviorRelay<[Todo]> = BehaviorRelay(value: [])
     var disposeBag = DisposeBag()
-    var nowFetching: Bool = true
+//    var nowFetching: Bool = true
+    var nowFetching: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     var currentPage: Int = 1
     
     init() {
         print(#fileID, #function, #line, "- ")
-        fetchTodos(currentPage)
+//        fetchTodos(currentPage)
+        fetchTodosFirst()
     } //init
     
     //1. 비지니스 로직을 가져온다 -> 문제 : TodoVM 클래스에는 todoListData와 tableview가 없다
@@ -30,44 +33,63 @@ class TodoVM {
         //3. ViewController의 todoListData에 bind를 이용해서 꽂아준다
     //2.
     //MARK: - 모든 할일 목록 불러오기(api 호출)
-    func fetchTodos(_ page: Int) {
-        TodosRouter.fetchTodos(page)
-            .subscribe(onNext: { data in
-                print(#fileID, #function, #line, "- data: \(data)")
-                guard let todos = data.data else { return }
-                //딕셔너리 그룹핑
-                let groupingTodos = Dictionary(grouping: todos, by: { $0.createdAt?.components(separatedBy: "T")[0] ?? "0" })
-                
-                var currentTodos = self.todoListData.value
-                
-                //그룹핑된 데이터 listData에 넣어주기 -> 이미 존재하는 header라면 해당 header에 append해주고 새로운 header라면 listData자체에 append
-                for (key, value) in groupingTodos {
-                    let temp: SectionOfCustomData = SectionOfCustomData(header: key, items: value)
-                    
-                    if let headerIndex = currentTodos.firstIndex(where: { sectionData in
-                        return sectionData.header == temp.header
-                    }) {
-                        currentTodos[headerIndex].items.append(contentsOf: temp.items)
-                    } else {
-                        currentTodos.append(temp)
-                    }
-                }
-                
-                //최신 날짜의 데이터부터 나오도록 셋팅
-                currentTodos.sort { first, second in
-                    first.header > second.header
-                }
-                
-                self.todoListData.accept(currentTodos)
-                self.nowFetching = false
-            }, onError: { err in
-                print(#fileID, #function, #line, "- err: \(err)")
-            })
-            .disposed(by: disposeBag)
-    }
+//    func fetchTodos(_ page: Int) {
+//        TodosRouter.fetchTodos(page)
+//            .subscribe(onNext: { data in
+//                print(#fileID, #function, #line, "- data: \(data)")
+//                guard let todos = data.data else { return }
+//                //딕셔너리 그룹핑
+//                let groupingTodos = Dictionary(grouping: todos, by: { $0.createdAt?.components(separatedBy: "T")[0] ?? "0" })
+//
+//                var currentTodos = self.todoListData.value
+//
+//                //그룹핑된 데이터 listData에 넣어주기 -> 이미 존재하는 header라면 해당 header에 append해주고 새로운 header라면 listData자체에 append
+//                for (key, value) in groupingTodos {
+//                    let temp: SectionOfCustomData = SectionOfCustomData(header: key, items: value)
+//
+//                    if let headerIndex = currentTodos.firstIndex(where: { sectionData in
+//                        return sectionData.header == temp.header
+//                    }) {
+//                        currentTodos[headerIndex].items.append(contentsOf: temp.items)
+//                    } else {
+//                        currentTodos.append(temp)
+//                    }
+//                }
+//
+//                //최신 날짜의 데이터부터 나오도록 셋팅
+//                currentTodos.sort { first, second in
+//                    first.header > second.header
+//                }
+//
+//                self.todoListData.accept(currentTodos)
+//                self.nowFetching = false
+//            }, onError: { err in
+//                print(#fileID, #function, #line, "- err: \(err)")
+//            })
+//            .disposed(by: disposeBag)
+//    }
     
-    func moreFetchTodos(_ page: Int) {
-        
+    func fetchTodosFirst() {
+        TodosRouter.fetchTodos()
+            .compactMap{ $0.data } //Todo데이터들만 가지고 온다
+            .map { (todoList: [Todo]) -> [Todo] in
+                print(#fileID, #function, #line, "- todo앱에 진입 시 최초 데이터 가지고 오기⭐️ - \(todoList)")
+                let resultTodoList = todoList
+                    .enumerated()
+                    .map { (index, aTodo) -> Todo in
+                        let previousTodo = index > 0 ? todoList[index - 1] : nil
+                        var presentTodo = aTodo
+                        presentTodo.previousTodoDate = previousTodo?.updatedAt
+                        return presentTodo
+                    }
+                return resultTodoList
+            }
+            .withUnretained(self)
+            .bind { vm, newTodoList in
+                vm.todoListData.accept(newTodoList) //받은 데이터를 todoListData에 넣어준다
+                vm.nowFetching.accept(false) //현재 받아오는 중이 아니므로 nowFetching = false
+            }
+            .disposed(by: disposeBag)
     }
     
     func headerTime(_ dateString: String) -> String {
@@ -80,64 +102,64 @@ class TodoVM {
         return headerDateFormate.string(from: date)
     }
     
-    func addTodo(_ title: String, _ isDone: Bool) {
-        TodosRouter.addTodo(title, isDone).subscribe { data in
-            guard let addTodo = data.data else { return }
-            print(#fileID, #function, #line, "- data: \(data)")
-            guard let todoCreatedAt = addTodo.createdAt?.components(separatedBy: "T")[0] else { return }
-            print(#fileID, #function, #line, "- todoCreatedAt: \(todoCreatedAt)")
-            var currentTodoListData = self.todoListData.value
-            if let headerIndex = currentTodoListData.firstIndex(where: { sectionData in
-                return sectionData.header == todoCreatedAt
-            }) {
-                currentTodoListData[headerIndex].items.insert(addTodo, at: 0)
-            } else {
-                let temp: SectionOfCustomData = SectionOfCustomData(header: todoCreatedAt, items: [addTodo])
-                currentTodoListData.append(temp)
-            }
-            
-            currentTodoListData.sort { first, second in
-                first.header > second.header
-            }
-            self.todoListData.accept(currentTodoListData)
-        }
-        .disposed(by: disposeBag)
-    }
-    
-    
-    func editTodo(_ title: String,_ isDone: Bool,_ id: Int) {
-        TodosRouter.editTodo(title, isDone, id)
-            .subscribe (onNext: { data in
-                var currentTodos = self.todoListData.value //현재 todo데이터(데이터 변경 전)
-                guard let changeTodo = data.data else { return }
-
-                let changeTodoId = changeTodo.id
-                
-                for data in currentTodos {
-                    let todos = data.items
-                    let header = data.header
-                    
-                    guard let headerIndex = currentTodos.firstIndex(where: { sectionData in
-                        return sectionData.header == header
-                    }) else { return }
-                        
-                    if let changeTodoIndex = todos.firstIndex(where: { data in
-                        print(#fileID, #function, #line, "- data :\(data)")
-                        return data.id == changeTodoId
-                    }) {
-                        currentTodos[headerIndex].items[changeTodoIndex] = changeTodo
-                        print(#fileID, #function, #line, "- currentTodos change: \(currentTodos[headerIndex].items[changeTodoIndex])")
-                    }
-                }
-                
-                currentTodos.sort { first, second in
-                    first.header > second.header
-                }
-
-                self.todoListData.accept(currentTodos)
-            })
-            .disposed(by: disposeBag)
-    }
+//    func addTodo(_ title: String, _ isDone: Bool) {
+//        TodosRouter.addTodo(title, isDone).subscribe { data in
+//            guard let addTodo = data.data else { return }
+//            print(#fileID, #function, #line, "- data: \(data)")
+//            guard let todoCreatedAt = addTodo.createdAt?.components(separatedBy: "T")[0] else { return }
+//            print(#fileID, #function, #line, "- todoCreatedAt: \(todoCreatedAt)")
+//            var currentTodoListData = self.todoListData.value
+//            if let headerIndex = currentTodoListData.firstIndex(where: { sectionData in
+//                return sectionData.header == todoCreatedAt
+//            }) {
+//                currentTodoListData[headerIndex].items.insert(addTodo, at: 0)
+//            } else {
+//                let temp: SectionOfCustomData = SectionOfCustomData(header: todoCreatedAt, items: [addTodo])
+//                currentTodoListData.append(temp)
+//            }
+//            
+//            currentTodoListData.sort { first, second in
+//                first.header > second.header
+//            }
+//            self.todoListData.accept(currentTodoListData)
+//        }
+//        .disposed(by: disposeBag)
+//    }
+//    
+//    
+//    func editTodo(_ title: String,_ isDone: Bool,_ id: Int) {
+//        TodosRouter.editTodo(title, isDone, id)
+//            .subscribe (onNext: { data in
+//                var currentTodos = self.todoListData.value //현재 todo데이터(데이터 변경 전)
+//                guard let changeTodo = data.data else { return }
+//
+//                let changeTodoId = changeTodo.id
+//                
+//                for data in currentTodos {
+//                    let todos = data.items
+//                    let header = data.header
+//                    
+//                    guard let headerIndex = currentTodos.firstIndex(where: { sectionData in
+//                        return sectionData.header == header
+//                    }) else { return }
+//                        
+//                    if let changeTodoIndex = todos.firstIndex(where: { data in
+//                        print(#fileID, #function, #line, "- data :\(data)")
+//                        return data.id == changeTodoId
+//                    }) {
+//                        currentTodos[headerIndex].items[changeTodoIndex] = changeTodo
+//                        print(#fileID, #function, #line, "- currentTodos change: \(currentTodos[headerIndex].items[changeTodoIndex])")
+//                    }
+//                }
+//                
+//                currentTodos.sort { first, second in
+//                    first.header > second.header
+//                }
+//
+//                self.todoListData.accept(currentTodos)
+//            })
+//            .disposed(by: disposeBag)
+//    }
     
     //MARK: - spinner 만들기
     func createSpinnerFooter(_ widthSize: Int) -> UIView {

@@ -51,6 +51,9 @@ struct Todo: Codable {
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
+    
+    //날짜Label표시를 위해서 추가(이전 Todo의 날짜 체크)
+    var previousTodoDate: String?
 }
 
 // MARK: - Meta

@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 
 class TodoCell: UITableViewCell {
+    @IBOutlet weak var todoDate: UILabel!
     @IBOutlet weak var checkBox: UIButton!
     
     @IBOutlet weak var todoContent: UILabel!
@@ -31,6 +32,12 @@ class TodoCell: UITableViewCell {
         super.awakeFromNib()
     }
     
+    //MARK: - <# 설명 #>
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        print(#fileID, #function, #line, "- ")
+    }
+    
     //MARK: - cell UI 설정
     func settingUI() {
         guard let isDone = todoData?.isDone,
@@ -38,8 +45,10 @@ class TodoCell: UITableViewCell {
         todoContent.text = title
         
         settingCheckBoxUI(isDone)
+        settingTodoTimeAndDate()
     }
     
+    //MARK: - cell 초기 checkBox 설정
     func settingCheckBoxUI(_ isDone: Bool) {
         if isDone {
             if let image = UIImage(systemName: "checkmark.square.fill") {
@@ -52,19 +61,32 @@ class TodoCell: UITableViewCell {
         }
     }
     
-    //MARK: - string에서 Date로 변경
-    func settingTodoTime() {
-        guard let dateString = todoData?.createdAt else { return }
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    //MARK: - todo 시간, 날짜 설정
+    func settingTodoTimeAndDate() {
+        guard let currentDateString = todoData?.updatedAt else { return }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
         
-        if let date = dateFormatter.date(from: dateString) {
-            let timeFormate = DateFormatter()
-            timeFormate.dateFormat = "hh:mm a"
-            todoTime.text = timeFormate.string(from: date)
+        guard let currentDate = dateFormatter.date(from: currentDateString) else { return }
+        
+        let timeString = currentDate.formateToString("hh:mm a")
+        let dateString = currentDate.formateToString("yyyy.MM.dd")
+        
+        todoDate.text = dateString
+        todoTime.text = timeString
+        
+        if let previousDateString = todoData?.previousTodoDate,
+           let previousDate = dateFormatter.date(from: previousDateString) {
+            let isSameDay = previousDate.isSameDay(other: currentDate)
+            
+            print(#fileID, #function, #line, "- isSameDay checking: \(isSameDay)")
+            todoDate.isHidden = isSameDay
+        } else {
+            todoDate.isHidden = false
         }
     }
     
+    //MARK: - checkBox를 눌렀을 때 실행됨
     func handleCheckBox(_ sender: UIButton!) {
         guard let title = todoData?.title,
               let id = todoData?.id,

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D0587BC2A28EC39001281A7 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0587BB2A28EC39001281A7 /* Date+Ext.swift */; };
 		4D1404042A08F238001E31B2 /* TodoModal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D1404032A08F238001E31B2 /* TodoModal.storyboard */; };
 		4D1404062A08F414001E31B2 /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1404052A08F414001E31B2 /* TodoCell.swift */; };
 		4D14040C2A08F5B1001E31B2 /* TodoModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D14040B2A08F5B1001E31B2 /* TodoModal.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D0587BB2A28EC39001281A7 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
 		4D1404032A08F238001E31B2 /* TodoModal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TodoModal.storyboard; sourceTree = "<group>"; };
 		4D1404052A08F414001E31B2 /* TodoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCell.swift; sourceTree = "<group>"; };
 		4D14040B2A08F5B1001E31B2 /* TodoModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoModal.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				4D3294E62A0AB5EC008CECE3 /* Nibbed.swift */,
 				4D3294E82A0AB617008CECE3 /* ReuseIdentifier.swift */,
 				4DCF821D2A1531B8000FD517 /* ScrollViewExt.swift */,
+				4D0587BB2A28EC39001281A7 /* Date+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				4D3294E72A0AB5EC008CECE3 /* Nibbed.swift in Sources */,
 				4DCF821E2A1531B8000FD517 /* ScrollViewExt.swift in Sources */,
 				4D3294EB2A0AB6C8008CECE3 /* TodosVM.swift in Sources */,
+				4D0587BC2A28EC39001281A7 /* Date+Ext.swift in Sources */,
 				4DC6A5742A08DD0500135A1C /* SceneDelegate.swift in Sources */,
 				4D1404062A08F414001E31B2 /* TodoCell.swift in Sources */,
 				4D14040C2A08F5B1001E31B2 /* TodoModal.swift in Sources */,
