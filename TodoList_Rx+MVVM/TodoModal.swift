@@ -28,6 +28,7 @@ class TodoModal: UIViewController {
     var textViewPlaceHolder = ""
     var modalType: ModalType? = nil
     var todoId: Int? = nil
+    var todoRow: Int? = nil
     var disposeBag = DisposeBag()
     
     var addExecuteClosure: ((_ title: String, _ isDone: Bool) -> ())? = nil
@@ -39,6 +40,7 @@ class TodoModal: UIViewController {
         textView.delegate = self
         todoCompletedBtn.rx.tap.subscribe (onNext:{ [weak self] in
             guard let self = self else { return }
+            guard let row = self.todoRow else { return }
             let title = self.textView.text ?? ""
             let isDone = self.todoCompletedSwitch.isOn
 
@@ -50,11 +52,11 @@ class TodoModal: UIViewController {
                 case .edit:
                     print(#fileID, #function, #line, "- edit closure execute")
                     if let id = self.todoId {
+//                        self.editExecuteClosure?(title, isDone, id, row)
                         self.editExecuteClosure?(title, isDone, id)
                     }
                 }
             }
-            
             self.dismiss(animated: true)
         })
         .disposed(by: disposeBag)

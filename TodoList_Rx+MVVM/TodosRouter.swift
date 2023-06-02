@@ -60,6 +60,7 @@ enum TodosRouter {
     }
     
     static func fetchTodos(_ page: Int = 1) -> Observable<FetchTodo> {
+        print(#fileID, #function, #line, "- page: \(page)")
         let urlString = EndPoint.fetchTodo(page: page).endString
         guard let url = URL(string: urlString) else { return Observable.error(ApiError.badUrl) }
         var request = URLRequest(url: url)
@@ -78,7 +79,6 @@ enum TodosRouter {
                 }
                 throw ApiError.unknownErr(err: err)
             }
-            
     }
     
     static func addTodo(_ title: String, _ isDone: Bool) -> Observable<TodoModify> {

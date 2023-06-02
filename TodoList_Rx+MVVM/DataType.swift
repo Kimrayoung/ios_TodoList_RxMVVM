@@ -53,7 +53,7 @@ struct Todo: Codable {
     }
     
     //날짜Label표시를 위해서 추가(이전 Todo의 날짜 체크)
-    var previousTodoDate: String?
+    var previousTodoDate: String? = nil
 }
 
 // MARK: - Meta

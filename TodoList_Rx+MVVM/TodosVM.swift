@@ -12,13 +12,13 @@ import RxRelay
 import RxSwift
 
 class TodoVM {
-    
-//    let todoListData: BehaviorRelay<[SectionOfCustomData]> = BehaviorRelay(value: [])
     let todoListData: BehaviorRelay<[Todo]> = BehaviorRelay(value: [])
     var disposeBag = DisposeBag()
-//    var nowFetching: Bool = true
+    
+    //BehaviorRelay는 초기값이 있고 PublishRelay는 초기값이 없다
     var nowFetching: BehaviorRelay<Bool> = BehaviorRelay(value: false)
     var currentPage: Int = 1
+    var noMoreData: PublishRelay<Bool> = PublishRelay()
     
     init() {
         print(#fileID, #function, #line, "- ")
@@ -26,49 +26,7 @@ class TodoVM {
         fetchTodosFirst()
     } //init
     
-    //1. 비지니스 로직을 가져온다 -> 문제 : TodoVM 클래스에는 todoListData와 tableview가 없다
-    //문제 해결 방법 : view와 연결시켜준다다
-        //1. ViewController에서 todosVM을 메모리에 올려준다(ex. todosVM = TodosVM()
-        //2. fetchTodo를 불러서 todosVM의 todoListData에 넣어준다
-        //3. ViewController의 todoListData에 bind를 이용해서 꽂아준다
-    //2.
-    //MARK: - 모든 할일 목록 불러오기(api 호출)
-//    func fetchTodos(_ page: Int) {
-//        TodosRouter.fetchTodos(page)
-//            .subscribe(onNext: { data in
-//                print(#fileID, #function, #line, "- data: \(data)")
-//                guard let todos = data.data else { return }
-//                //딕셔너리 그룹핑
-//                let groupingTodos = Dictionary(grouping: todos, by: { $0.createdAt?.components(separatedBy: "T")[0] ?? "0" })
-//
-//                var currentTodos = self.todoListData.value
-//
-//                //그룹핑된 데이터 listData에 넣어주기 -> 이미 존재하는 header라면 해당 header에 append해주고 새로운 header라면 listData자체에 append
-//                for (key, value) in groupingTodos {
-//                    let temp: SectionOfCustomData = SectionOfCustomData(header: key, items: value)
-//
-//                    if let headerIndex = currentTodos.firstIndex(where: { sectionData in
-//                        return sectionData.header == temp.header
-//                    }) {
-//                        currentTodos[headerIndex].items.append(contentsOf: temp.items)
-//                    } else {
-//                        currentTodos.append(temp)
-//                    }
-//                }
-//
-//                //최신 날짜의 데이터부터 나오도록 셋팅
-//                currentTodos.sort { first, second in
-//                    first.header > second.header
-//                }
-//
-//                self.todoListData.accept(currentTodos)
-//                self.nowFetching = false
-//            }, onError: { err in
-//                print(#fileID, #function, #line, "- err: \(err)")
-//            })
-//            .disposed(by: disposeBag)
-//    }
-    
+    //MARK: - Todo 앱 진입시 가장 처음 데이터를 불러오는 api
     func fetchTodosFirst() {
         TodosRouter.fetchTodos()
             .compactMap{ $0.data } //Todo데이터들만 가지고 온다
@@ -92,6 +50,52 @@ class TodoVM {
             .disposed(by: disposeBag)
     }
     
+    //MARK: - 스크롤이 바닥에 닿았을 떄 새로운 데이터 요청
+    func fetchMoreTodos() {
+        print(#fileID, #function, #line, "- nowFetching⭐️: \(self.nowFetching.value)")
+        
+        if nowFetching.value { return }
+        
+        currentPage += 1
+        nowFetching.accept(true)
+        
+        TodosRouter.fetchTodos(currentPage)
+            .do { response in
+                guard let currentPage = response.meta?.currentPage,
+                      let lastPage = response.meta?.lastPage else { return }
+                
+                let noMoreData = currentPage == lastPage
+                print(#fileID, #function, #line, "- noMoreData checking: \(noMoreData)")
+                self.noMoreData.accept(noMoreData)
+            }
+            .compactMap { $0.data }
+            .map { (todoList: [Todo]) -> [Todo] in
+                let originalTodoList = todoList
+                let resultTodoList = todoList
+                    .enumerated()
+                    .map { (index, aTodo) -> Todo in
+                        let previousTodo = index > 0 ? originalTodoList[index - 1] : nil
+                        var presentTodo = aTodo
+                        presentTodo.previousTodoDate = previousTodo?.updatedAt
+                        
+                        return presentTodo
+                    }
+                return resultTodoList
+            }
+            .withUnretained(self)
+            .bind { vm, todoList in
+                var existingList: [Todo] = vm.todoListData.value
+                var appendingList : [Todo] = todoList
+                
+                appendingList[0].previousTodoDate = existingList.last?.updatedAt
+                existingList.append(contentsOf: appendingList)
+                
+                vm.todoListData.accept(existingList)
+                vm.nowFetching.accept(false)
+            }
+            .disposed(by: disposeBag)
+    }
+    
     func headerTime(_ dateString: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-mm-dd"
@@ -102,61 +106,62 @@ class TodoVM {
         return headerDateFormate.string(from: date)
     }
     
+    //MARK: - 할일 추가 버튼 눌렀을 경우
+    /// 원래 fetchTodos(api 호출)을 하는게 아니라 그냥 기존의 데이터를 불러와서 거기에 새로운 todo만 Insert해주는 식으로 하고 싶었는데 그러면 header표시가 곤란해져서 그냥 fetchTodos함수호출
+    func addTodo(_ title: String, _ isDone: Bool) {
+        TodosRouter.addTodo(title, isDone)
+            .subscribe(onNext: { _ in
+                self.fetchTodosFirst()
+            })
+            .disposed(by: disposeBag)
+    }
+    
 //    func addTodo(_ title: String, _ isDone: Bool) {
-//        TodosRouter.addTodo(title, isDone).subscribe { data in
-//            guard let addTodo = data.data else { return }
-//            print(#fileID, #function, #line, "- data: \(data)")
-//            guard let todoCreatedAt = addTodo.createdAt?.components(separatedBy: "T")[0] else { return }
-//            print(#fileID, #function, #line, "- todoCreatedAt: \(todoCreatedAt)")
-//            var currentTodoListData = self.todoListData.value
-//            if let headerIndex = currentTodoListData.firstIndex(where: { sectionData in
-//                return sectionData.header == todoCreatedAt
-//            }) {
-//                currentTodoListData[headerIndex].items.insert(addTodo, at: 0)
-//            } else {
-//                let temp: SectionOfCustomData = SectionOfCustomData(header: todoCreatedAt, items: [addTodo])
-//                currentTodoListData.append(temp)
+//        TodosRouter.addTodo(title, isDone)
+//            .compactMap{ $0.data }
+//            .map{ (aTodo: Todo) -> Todo in
+//                //현재 입력한 데이터가 가장 최신의 데이터가 된다 -> 즉 현재 todoList에서 첫번째 데이터의 previousTodo가 현재 addTodo한 데이터
+//                guard var exsitingFirstTodo = self.todoListData.value.first else { return aTodo }
+//                var resultTodo = aTodo
+//                exsitingFirstTodo.previousTodoDate = resultTodo.updatedAt
+//
+//                return resultTodo
 //            }
-//            
-//            currentTodoListData.sort { first, second in
-//                first.header > second.header
+//            .bind { newTodo in
+//                var existingTodos = self.todoListData.value
+//                existingTodos.insert(newTodo, at: 0)
+//
+//                self.todoListData.accept(existingTodos)
 //            }
-//            self.todoListData.accept(currentTodoListData)
-//        }
-//        .disposed(by: disposeBag)
+//            .disposed(by: disposeBag)
+//
 //    }
-//    
-//    
-//    func editTodo(_ title: String,_ isDone: Bool,_ id: Int) {
+    
+    //MARK: - Todo데이터 수정
+    ///createdAt이 기준이 아니라 updatedAt이 기준이므로 header라벨이 변경됨 -> fetchTodos를 해서 새롭게 데이터를 가지고 온다
+    func editTodo(_ title: String,_ isDone: Bool,_ id: Int) {
+        TodosRouter.editTodo(title, isDone, id)
+            .bind(onNext: { _ in
+                print(#fileID, #function, #line, "- ")
+                self.fetchTodosFirst()
+            })
+            .disposed(by: disposeBag)
+    }
+  
+    
+//    func editTodo(_ title: String,_ isDone: Bool,_ id: Int,_ row: Int) {
 //        TodosRouter.editTodo(title, isDone, id)
-//            .subscribe (onNext: { data in
-//                var currentTodos = self.todoListData.value //현재 todo데이터(데이터 변경 전)
-//                guard let changeTodo = data.data else { return }
+//            .compactMap{ $0.data }
+//            .bind(onNext: { modifyTodo in
+//                print(#fileID, #function, #line, "- modifyTodo⭐️: \(modifyTodo)")
+//                var existingTodos = self.todoListData.value
+//                let previousTodo = row > 0 ? existingTodos[row - 1] : nil
+//                var resultModifyTodo = modifyTodo
+//                resultModifyTodo.previousTodoDate = previousTodo?.updatedAt
 //
-//                let changeTodoId = changeTodo.id
-//                
-//                for data in currentTodos {
-//                    let todos = data.items
-//                    let header = data.header
-//                    
-//                    guard let headerIndex = currentTodos.firstIndex(where: { sectionData in
-//                        return sectionData.header == header
-//                    }) else { return }
-//                        
-//                    if let changeTodoIndex = todos.firstIndex(where: { data in
-//                        print(#fileID, #function, #line, "- data :\(data)")
-//                        return data.id == changeTodoId
-//                    }) {
-//                        currentTodos[headerIndex].items[changeTodoIndex] = changeTodo
-//                        print(#fileID, #function, #line, "- currentTodos change: \(currentTodos[headerIndex].items[changeTodoIndex])")
-//                    }
-//                }
-//                
-//                currentTodos.sort { first, second in
-//                    first.header > second.header
-//                }
+//                existingTodos[row] = resultModifyTodo
 //
-//                self.todoListData.accept(currentTodos)
+//                self.todoListData.accept(existingTodos)
 //            })
 //            .disposed(by: disposeBag)
 //    }
