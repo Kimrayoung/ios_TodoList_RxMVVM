@@ -61,6 +61,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="isDoneBtn" destination="wgs-Qr-NdL" id="NHE-qS-Nn9"/>
                         <outlet property="searchBar" destination="HyC-KY-gXk" id="tId-Oy-lx3"/>
                         <outlet property="tableView" destination="8hg-9b-qFV" id="MrJ-43-sLq"/>
                         <outlet property="todoAddBtn" destination="yhx-5P-j5k" id="E0t-am-F2w"/>

@@ -30,7 +30,7 @@
                                 <rect key="frame" x="0.0" y="40.666666666666671" width="583" height="135.33333333333331"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHg-hu-8Ve">
-                                        <rect key="frame" x="0.0" y="43.333333333333336" width="20" height="20"/>
+                                        <rect key="frame" x="0.0" y="46.000000000000007" width="20" height="19.999999999999993"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="GmI-j1-4ow"/>
                                             <constraint firstAttribute="height" constant="20" id="tSN-Lp-cqf"/>
@@ -40,7 +40,7 @@
                                         <buttonConfiguration key="configuration" style="plain" image="square" catalog="system"/>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 할일" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u10-nP-jiA">
-                                        <rect key="frame" x="33" y="10" width="530" height="86.666666666666671"/>
+                                        <rect key="frame" x="33" y="15" width="530" height="81.666666666666671"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" name="todoCellContent"/>
                                         <nil key="highlightedColor"/>
@@ -58,7 +58,7 @@
                                     <constraint firstItem="ZHg-hu-8Ve" firstAttribute="leading" secondItem="TQ2-2j-dtR" secondAttribute="leading" id="L9a-WU-kJ4"/>
                                     <constraint firstItem="u10-nP-jiA" firstAttribute="leading" secondItem="ZHg-hu-8Ve" secondAttribute="trailing" constant="13" id="LDf-GW-PIT"/>
                                     <constraint firstItem="ZHg-hu-8Ve" firstAttribute="centerY" secondItem="u10-nP-jiA" secondAttribute="centerY" id="Tkc-U1-rys"/>
-                                    <constraint firstItem="u10-nP-jiA" firstAttribute="top" secondItem="TQ2-2j-dtR" secondAttribute="top" constant="10" id="eIN-bC-23c"/>
+                                    <constraint firstItem="u10-nP-jiA" firstAttribute="top" secondItem="TQ2-2j-dtR" secondAttribute="top" constant="15" id="eIN-bC-23c"/>
                                     <constraint firstItem="Piv-nS-oJD" firstAttribute="top" secondItem="u10-nP-jiA" secondAttribute="bottom" constant="13" id="mWf-3Z-YCd"/>
                                     <constraint firstAttribute="trailing" secondItem="u10-nP-jiA" secondAttribute="trailing" constant="20" id="qe3-g4-htg"/>
                                     <constraint firstItem="Piv-nS-oJD" firstAttribute="leading" secondItem="u10-nP-jiA" secondAttribute="leading" id="xFe-zl-JZE"/>
@@ -81,7 +81,9 @@
                 <outlet property="checkBox" destination="ZHg-hu-8Ve" id="DwP-eU-8dM"/>
                 <outlet property="todoContent" destination="u10-nP-jiA" id="ngQ-L1-r9r"/>
                 <outlet property="todoDate" destination="bIX-ud-pmh" id="B6I-47-MWI"/>
+                <outlet property="todoStackView" destination="0Mu-B3-sh3" id="06a-Jv-cnb"/>
                 <outlet property="todoTime" destination="Piv-nS-oJD" id="JEf-Ib-tmg"/>
+                <outlet property="todoView" destination="TQ2-2j-dtR" id="1gu-DJ-qG7"/>
             </connections>
             <point key="canvasLocation" x="188.54961832061068" y="-45.070422535211272"/>
         </tableViewCell>

@@ -12,7 +12,9 @@ import RxCocoa
 
 class TodoCell: UITableViewCell {
     @IBOutlet weak var todoDate: UILabel!
+    @IBOutlet weak var todoStackView: UIStackView!
     @IBOutlet weak var checkBox: UIButton!
+    @IBOutlet weak var todoView: UIView!
     
     @IBOutlet weak var todoContent: UILabel!
     @IBOutlet weak var todoTime: UILabel!
@@ -48,7 +50,7 @@ class TodoCell: UITableViewCell {
         settingTodoTimeAndDate()
     }
     
-    //MARK: - cell 초기 checkBox 설정
+    //MARK: - checkBox 설정
     func settingCheckBoxUI(_ isDone: Bool) {
         if isDone {
             if let image = UIImage(systemName: "checkmark.square.fill") {
@@ -61,7 +63,7 @@ class TodoCell: UITableViewCell {
         }
     }
     
-    //MARK: - todo 시간, 날짜 설정
+    //MARK: - todo 시간, 날짜 설정, header hidden설정
     func settingTodoTimeAndDate() {
         guard let currentDateString = todoData?.updatedAt else { return }
         let dateFormatter = DateFormatter()
@@ -85,6 +87,7 @@ class TodoCell: UITableViewCell {
             todoDate.isHidden = false
         }
     }
+
     
     //MARK: - checkBox를 눌렀을 때 실행됨
     func handleCheckBox(_ sender: UIButton!) {
@@ -92,7 +95,11 @@ class TodoCell: UITableViewCell {
               let id = todoData?.id,
               let isDone = todoData?.isDone else { return }
         
-        checkBoxClicked?(title, !isDone, id) //checkBoxClicked를 실행 -> 정의는 MainVC에서
+        if let checkBoxClicked = checkBoxClicked {
+            checkBoxClicked(title, !isDone, id)
+        } else {
+            print(#fileID, #function, #line, "- checkBoxClicked 함수 없음❗️")
+        }
     }
     
 }
