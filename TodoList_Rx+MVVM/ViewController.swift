@@ -44,9 +44,6 @@ class ViewController: UIViewController, UISearchBarDelegate {
         //MARK: - 할일 목록 검색
         searchBar.rx.searchButtonClicked
             .withUnretained(self)
-            .filter({ vc, element in
-                return vc.todosVM.nowSearchDataFetching.value == false
-            })
             .bind { vc, element in
                 vc.searchBar.resignFirstResponder()
                 guard let searchText = vc.searchBar.text else { return }

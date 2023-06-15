@@ -218,7 +218,7 @@ class TodoVM {
                 onNext: { vm, todoList in
                     print(#fileID, #function, #line, "- search todoData⭐️: \(todoList)")
                     guard let originalTodos = todoList.data else { return }
-                    let resultTodoList: [Todo] = originalTodos
+                    var resultTodoList: [Todo] = originalTodos
                         .enumerated()
                         .map { (index, aTodo) -> Todo in
                             let previousTodo = index > 0 ? originalTodos[index - 1] : nil
@@ -226,8 +226,19 @@ class TodoVM {
                             presentTodo.previousTodoDate = previousTodo?.updatedAt
                             return presentTodo
                         }
-                    vm.todoListData.accept(resultTodoList)
                     
+                    //currentPage가 1이 아닐 경우에는 데이터를 더 불러온 것
+                    if vm.currentPage != 1 {
+                        var currentTodoList = vm.todoListData.value
+                        let previousTodo = currentTodoList.last
+                        resultTodoList[0].previousTodoDate = previousTodo?.createdAt
+                        
+                        currentTodoList.append(contentsOf: resultTodoList)
+                        vm.todoListData.accept(currentTodoList)
+                    } else {
+                        vm.todoListData.accept(resultTodoList)
+                    }
+                    //현개 검색어 데이터가 있음
                     vm.nowSearchDataFetching.accept(true)
                     vm.notifySearchDataNotFound.accept(false)
                     vm.nowFetching.accept(false)
